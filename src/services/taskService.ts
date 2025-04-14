@@ -93,24 +93,6 @@ export const TaskService = {
     return [...mockUsers];
   },
   
-  // Get tasks that need reminders (overdue or due within 24 hours)
-  getTasksNeedingReminders: async (): Promise<Task[]> => {
-    await delay(300);
-    
-    const now = new Date();
-    return tasks.filter(task => {
-      // Don't remind about completed tasks
-      if (task.status === 'Complete') return false;
-      
-      // Check if task is overdue
-      if (isPast(task.dueDate) && task.dueDate < now) return true;
-      
-      // Check if task is due within 24 hours
-      const hoursUntilDue = differenceInHours(task.dueDate, now);
-      return hoursUntilDue >= 0 && hoursUntilDue <= 24;
-    });
-  },
-  
   // Delete a task (added for completeness)
   deleteTask: async (taskId: string): Promise<void> => {
     await delay(500);

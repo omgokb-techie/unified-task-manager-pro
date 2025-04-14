@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { CreateTaskForm } from "@/components/CreateTaskForm";
 import { TaskCard } from "@/components/TaskCard";
@@ -25,7 +24,7 @@ function Index() {
       try {
         setIsLoading(true);
         
-        // Load tasks, users, and buildings (removed task reminders)
+        // Load tasks, users, and buildings
         const [tasksData, usersData, buildingsData] = await Promise.all([
           TaskService.getAllTasks(),
           TaskService.getAllUsers(),
@@ -114,9 +113,7 @@ function Index() {
       </div>
       
       <div>
-        {/* Main content area - removed the grid structure for sidebar */}
         <div className="space-y-6">
-          {/* Filters and actions row */}
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
             <TaskFilters
               users={users}
