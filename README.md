@@ -1,73 +1,100 @@
-# Welcome to your Lovable project
 
-## Project info
+# Task Management Module
 
-**URL**: https://lovable.dev/projects/b081c1c8-c90f-425b-b5cf-6175a6dc9327
+This is a simplified task management module for property management, allowing users to create tasks, assign them to users, and track their status across different buildings.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Task Management**:
+  - Create tasks with title, assigned user, status, due date, and building/property
+  - Update task status (To Do, In Progress, Complete)
+  - Filter tasks by building ID or assigned user
+  - View all tasks in a responsive grid layout
 
-**Use Lovable**
+- **Auto-Reminder Logic**:
+  - Tasks that are overdue or due within 24 hours are highlighted
+  - Dedicated reminders section in the sidebar
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b081c1c8-c90f-425b-b5cf-6175a6dc9327) and start prompting.
+- **UI Features**:
+  - Responsive design that works on mobile, tablet, and desktop
+  - Status indicators with color coding
+  - Form validation for task creation
+  - Loading states and error handling
 
-Changes made via Lovable will be committed automatically to this repo.
+## Tech Stack
 
-**Use your preferred IDE**
+- **Frontend**:
+  - React with TypeScript
+  - React Hook Form for form handling
+  - Tailwind CSS for styling
+  - Shadcn UI for component library
+  - Date-fns for date manipulation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Data Management**:
+  - Mock API service with simulated network delays
+  - In-memory data store (would connect to PostgreSQL/MySQL in production)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Project Structure
 
-Follow these steps:
+- `/src/components`: UI components for the application
+- `/src/services`: API and data services
+- `/src/types`: TypeScript type definitions
+- `/src/pages`: Main application pages
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## API Endpoints (Mock Implementation)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+The application includes mock implementations of the following API endpoints:
 
-# Step 3: Install the necessary dependencies.
-npm i
+- `GET /tasks`: List all tasks
+- `GET /tasks?buildingId={id}`: List tasks by building ID
+- `GET /tasks?userId={id}`: List tasks by assigned user
+- `POST /tasks`: Create a new task
+- `PATCH /tasks/{id}/status`: Update a task status
+- `GET /tasks/reminders`: Get tasks needing reminders
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## How Email Integration Could Work
 
-**Edit a file directly in GitHub**
+The task system could be linked to an incoming email parser or API integration as follows:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. **Email Parser Integration**:
+   - Set up a dedicated email address (e.g., tasks@property.com)
+   - Incoming emails would be parsed by a service like Mailgun or SendGrid
+   - The parser would extract key information (subject = task title, body = details)
+   - Structured data would be sent to the API to create new tasks
+   - Reply-to threads could update existing tasks
 
-**Use GitHub Codespaces**
+2. **API Integration**:
+   - Expose a secure API endpoint for external services
+   - Third-party property management tools could create tasks via API
+   - Maintenance request systems could automatically generate tasks
+   - Smart building systems could trigger tasks based on sensor data
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+3. **Implementation**:
+   - Add a webhook endpoint to receive parsed email data
+   - Implement authentication for API consumers
+   - Create a task mapping service to standardize incoming data
+   - Add notification system to alert users of new email-generated tasks
 
-## What technologies are used for this project?
+## Future Enhancements
 
-This project is built with:
+- User authentication and role-based permissions
+- File attachments for tasks (photos of issues, documents)
+- Task comments and activity history
+- Task categories and priority levels
+- Task dependencies and subtasks
+- Calendar view for due dates
+- Mobile app with push notifications
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Running the Project
 
-## How can I deploy this project?
+1. Install dependencies:
+   ```
+   npm install
+   ```
 
-Simply open [Lovable](https://lovable.dev/projects/b081c1c8-c90f-425b-b5cf-6175a6dc9327) and click on Share -> Publish.
+2. Start the development server:
+   ```
+   npm run dev
+   ```
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+3. Open your browser to the local server address shown in the terminal (typically http://localhost:8080)
