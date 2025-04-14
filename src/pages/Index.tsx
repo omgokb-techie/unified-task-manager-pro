@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import { CreateTaskForm } from "@/components/CreateTaskForm";
 import { TaskCard } from "@/components/TaskCard";
 import { TaskFilters } from "@/components/TaskFilters";
-import { TaskReminders } from "@/components/TaskReminders";
 import { TaskService } from "@/services/taskService";
 import { Building, Task, User } from "@/types/task";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 function Index() {
   // State for tasks, users, buildings, and filters
@@ -14,7 +13,6 @@ function Index() {
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [buildings, setBuildings] = useState<Building[]>([]);
-  const [taskReminders, setTaskReminders] = useState<Task[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,19 +25,17 @@ function Index() {
       try {
         setIsLoading(true);
         
-        // Load tasks, users, and buildings
-        const [tasksData, usersData, buildingsData, reminderTasks] = await Promise.all([
+        // Load tasks, users, and buildings (removed task reminders)
+        const [tasksData, usersData, buildingsData] = await Promise.all([
           TaskService.getAllTasks(),
           TaskService.getAllUsers(),
           TaskService.getAllBuildings(),
-          TaskService.getTasksNeedingReminders(),
         ]);
         
         setTasks(tasksData);
         setFilteredTasks(tasksData);
         setUsers(usersData);
         setBuildings(buildingsData);
-        setTaskReminders(reminderTasks);
       } catch (error) {
         toast({
           title: "Error loading data",
@@ -90,10 +86,6 @@ function Index() {
     try {
       const updatedTasks = await TaskService.getAllTasks();
       setTasks(updatedTasks);
-      
-      // Refresh reminders
-      const reminderTasks = await TaskService.getTasksNeedingReminders();
-      setTaskReminders(reminderTasks);
     } catch (error) {
       toast({
         title: "Error refreshing tasks",
@@ -121,9 +113,9 @@ function Index() {
         </p>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Main content area */}
-        <div className="lg:col-span-3 space-y-6">
+      <div>
+        {/* Main content area - removed the grid structure for sidebar */}
+        <div className="space-y-6">
           {/* Filters and actions row */}
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
             <TaskFilters
@@ -172,11 +164,6 @@ function Index() {
               </p>
             </div>
           )}
-        </div>
-        
-        {/* Sidebar with reminders */}
-        <div className="lg:col-span-1">
-          <TaskReminders tasks={taskReminders} />
         </div>
       </div>
     </div>
