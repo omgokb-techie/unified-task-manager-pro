@@ -37,7 +37,7 @@ function Index() {
         setBuildings(buildingsData);
       } catch (error) {
         toast({
-          title: "Error loading data",
+          title: "❌ Error loading data",
           description: "There was an error loading the task data.",
           variant: "destructive",
         });
@@ -54,7 +54,7 @@ function Index() {
     let result = [...tasks];
     
     if (selectedUserId) {
-      result = result.filter((task) => task.assignedUser.id === selectedUserId);
+      result = result.filter((task) => task.userId === selectedUserId);
     }
     
     if (selectedBuildingId) {
@@ -87,7 +87,7 @@ function Index() {
       setTasks(updatedTasks);
     } catch (error) {
       toast({
-        title: "Error refreshing tasks",
+        title: "❌ Error refreshing tasks",
         description: "There was an error refreshing the task list.",
         variant: "destructive",
       });
@@ -101,6 +101,23 @@ function Index() {
         task.id === updatedTask.id ? updatedTask : task
       )
     );
+    setFilteredTasks((prevFilteredTasks) =>
+      prevFilteredTasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task
+      )
+    );
+  };
+
+  // Helper function to get user name by ID
+  const getUserName = (userId: string) => {
+    const user = users.find(user => user.id === userId);
+    return user ? user.name : 'Unknown User';
+  };
+
+  // Helper function to get building name by ID
+  const getBuildingName = (buildingId: string) => {
+    const building = buildings.find(building => building.id === buildingId);
+    return building ? building.name : 'Unknown Building';
   };
 
   return (
@@ -143,13 +160,20 @@ function Index() {
             </div>
           ) : filteredTasks.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredTasks.map((task) => (
-                <TaskCard 
-                  key={task.id} 
-                  task={task} 
-                  onTaskUpdated={handleTaskUpdated}
-                />
-              ))}
+              {filteredTasks.map((task) => {
+                const taskWithNames = {
+                  ...task,
+                  userName: getUserName(task.userId),
+                  buildingName: getBuildingName(task.buildingId)
+                };
+                return (
+                  <TaskCard 
+                    key={task.id}
+                    task={taskWithNames}
+                    onTaskUpdated={handleTaskUpdated}
+                  />
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-10">

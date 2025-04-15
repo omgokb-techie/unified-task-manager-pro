@@ -14,18 +14,17 @@ export interface Building {
 export interface Task {
   id: string;
   title: string;
-  assignedUser: User;
+  userId: string;
   status: TaskStatus;
   dueDate: Date;
-  buildingId: string;
-  building: Building;
+  buildingId: string
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface TaskFormData {
   title: string;
-  assignedUserId: string;
+  userId: string;
   status: TaskStatus;
   dueDate: string;
   buildingId: string;

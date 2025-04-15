@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -68,8 +67,13 @@ export function CreateTaskForm({ onTaskCreated, users, buildings }: CreateTaskFo
       
       // For now, simulate successful creation
       toast({
-        title: "Task created",
-        description: "Your task has been created successfully.",
+        title: "✅ Task Created Successfully",
+        description: (
+          <div className="space-y-1">
+            <p className="font-medium">{form.getValues("title")}</p>
+            <p className="text-sm text-muted-foreground">Task has been added to your list</p>
+          </div>
+        ),
       });
       
       // Close the dialog
@@ -82,8 +86,13 @@ export function CreateTaskForm({ onTaskCreated, users, buildings }: CreateTaskFo
       onTaskCreated();
     } catch (error) {
       toast({
-        title: "Error creating task",
-        description: "There was an error creating the task.",
+        title: "❌ Failed to Create Task",
+        description: (
+          <div className="space-y-1">
+            <p className="font-medium">{form.getValues("title")}</p>
+            <p className="text-sm text-muted-foreground">Please try again or contact support if the issue persists</p>
+          </div>
+        ),
         variant: "destructive",
       });
     }
@@ -129,7 +138,12 @@ export function CreateTaskForm({ onTaskCreated, users, buildings }: CreateTaskFo
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a user" />
+                        <SelectValue
+                          placeholder="Select a user"
+                          children={
+                            users.find((user) => user.id == field.value)?.name || ''
+                          }
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -197,7 +211,12 @@ export function CreateTaskForm({ onTaskCreated, users, buildings }: CreateTaskFo
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a building" />
+                        <SelectValue
+                          placeholder="Select a building"
+                          children={
+                            buildings.find((building) => building.id == field.value)?.name || ''
+                          }  
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

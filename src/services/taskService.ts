@@ -1,101 +1,90 @@
-
 import { Building, Task, TaskFormData, TaskStatus, User } from "@/types/task";
-import { mockBuildings, mockTasks, mockUsers } from "./mockData";
-import { addDays, differenceInHours, isPast, startOfToday } from "date-fns";
 
-// Helper to simulate API delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const API_BASE_URL = 'http://localhost:5000/api';
 
-// In-memory "database" for tasks
-let tasks = [...mockTasks];
+// Common headers for all requests
+const headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+};
 
 // Task API Service
 export const TaskService = {
-  // Get all tasks
+  // Get all tasks without any filters
   getAllTasks: async (): Promise<Task[]> => {
-    await delay(300); // Simulate API delay
-    return [...tasks];
+    const response = await fetch(`${API_BASE_URL}/tasks`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch tasks');
+    }
+    return response.json();
   },
-  
-  // Get tasks by building ID
-  getTasksByBuildingId: async (buildingId: string): Promise<Task[]> => {
-    await delay(300);
-    return tasks.filter(task => task.buildingId === buildingId);
+
+  // Get filtered tasks by building ID or user ID
+  getFilteredTasks: async (params?: { buildingId?: string; userId?: string }): Promise<Task[]> => {
+    const queryParams = new URLSearchParams();
+    if (params?.buildingId) queryParams.append('buildingId', params.buildingId);
+    if (params?.userId) queryParams.append('userId', params.userId);
+
+    const response = await fetch(`${API_BASE_URL}/tasks?${queryParams.toString()}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch filtered tasks');
+    }
+    return response.json();
   },
-  
-  // Get tasks by assigned user
-  getTasksByUserId: async (userId: string): Promise<Task[]> => {
-    await delay(300);
-    return tasks.filter(task => task.assignedUser.id === userId);
+
+  // Get all buildings
+  getAllBuildings: async (): Promise<Building[]> => {
+    const response = await fetch(`${API_BASE_URL}/buildings`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch buildings');
+    }
+    return response.json();
   },
-  
+
+  // Get all users
+  getAllUsers: async (): Promise<User[]> => {
+    const response = await fetch(`${API_BASE_URL}/users`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch users');
+    }
+    return response.json();
+  },
+
   // Create a new task
   createTask: async (taskData: TaskFormData): Promise<Task> => {
-    await delay(500);
+    const response = await fetch(`${API_BASE_URL}/tasks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: taskData.title,
+        userId: taskData.userId,
+        status: taskData.status,
+        due_date: taskData.dueDate, // Note: backend expects due_date
+        buildingId: taskData.buildingId
+      }),
+    });
     
-    const user = mockUsers.find(user => user.id === taskData.assignedUserId);
-    const building = mockBuildings.find(building => building.id === taskData.buildingId);
-    
-    if (!user || !building) {
-      throw new Error("Invalid user or building ID");
+    if (!response.ok) {
+      throw new Error('Failed to create task');
     }
-    
-    const newTask: Task = {
-      id: `task-${tasks.length + 1}-${Date.now()}`,
-      title: taskData.title,
-      assignedUser: user,
-      status: taskData.status,
-      dueDate: new Date(taskData.dueDate),
-      buildingId: taskData.buildingId,
-      building: building,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    
-    tasks = [...tasks, newTask];
-    return newTask;
+    return response.json();
   },
-  
+
   // Update task status
   updateTaskStatus: async (taskId: string, status: TaskStatus): Promise<Task> => {
-    await delay(500);
+    const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status }),
+    });
     
-    const taskIndex = tasks.findIndex(task => task.id === taskId);
-    
-    if (taskIndex === -1) {
-      throw new Error("Task not found");
+    if (!response.ok) {
+      throw new Error('Failed to update task status');
     }
-    
-    const updatedTask = {
-      ...tasks[taskIndex],
-      status,
-      updatedAt: new Date(),
-    };
-    
-    tasks = [
-      ...tasks.slice(0, taskIndex),
-      updatedTask,
-      ...tasks.slice(taskIndex + 1),
-    ];
-    
-    return updatedTask;
-  },
-  
-  // Get all buildings (for selecting in the form)
-  getAllBuildings: async (): Promise<Building[]> => {
-    await delay(200);
-    return [...mockBuildings];
-  },
-  
-  // Get all users (for selecting in the form)
-  getAllUsers: async (): Promise<User[]> => {
-    await delay(200);
-    return [...mockUsers];
-  },
-  
-  // Delete a task (added for completeness)
-  deleteTask: async (taskId: string): Promise<void> => {
-    await delay(500);
-    tasks = tasks.filter(task => task.id !== taskId);
+    return response.json();
   },
 };

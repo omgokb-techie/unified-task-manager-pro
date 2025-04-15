@@ -1,6 +1,5 @@
-
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Task } from "@/types/task";
+import { Task, TaskStatus } from "@/types/task";
 import { format } from "date-fns";
 import { Building, Clock, User } from "lucide-react";
 import { TaskStatusBadge } from "./TaskStatusBadge";
@@ -17,29 +16,34 @@ import { TaskService } from "@/services/taskService";
 import { useToast } from "@/components/ui/use-toast";
 
 interface TaskCardProps {
-  task: Task;
+  task: Task & { userName: string; buildingName: string };
   onTaskUpdated: (updatedTask: Task) => void;
 }
 
 export function TaskCard({ task, onTaskUpdated }: TaskCardProps) {
   const [isUpdating, setIsUpdating] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState(task.status);
   const { toast } = useToast();
   
   const handleStatusChange = async (newStatus: string) => {
     try {
       setIsUpdating(true);
+      setCurrentStatus(newStatus as TaskStatus); // Update local state immediately
+      
       const updatedTask = await TaskService.updateTaskStatus(
         task.id, 
-        newStatus as "To Do" | "In Progress" | "Complete"
+        newStatus as TaskStatus
       );
+      
       onTaskUpdated(updatedTask);
       toast({
-        title: "Task updated",
+        title: "✅ Task updated",
         description: `Task status changed to ${newStatus}`,
       });
     } catch (error) {
+      setCurrentStatus(task.status); // Revert to previous status on error
       toast({
-        title: "Error updating task",
+        title: "❌ Error updating task",
         description: "There was an error updating the task status.",
         variant: "destructive",
       });
@@ -54,17 +58,17 @@ export function TaskCard({ task, onTaskUpdated }: TaskCardProps) {
         <div className="space-y-1">
           <h3 className="font-semibold text-lg leading-tight">{task.title}</h3>
         </div>
-        <TaskStatusBadge status={task.status} dueDate={task.dueDate} />
+        <TaskStatusBadge status={currentStatus} dueDate={task.dueDate} />
       </CardHeader>
       <CardContent className="pb-3">
         <div className="grid gap-2 mt-2">
           <div className="flex items-center text-sm text-muted-foreground">
             <User className="mr-1 h-4 w-4" />
-            <span>{task.assignedUser.name}</span>
+            <span>{task.userName}</span>
           </div>
           <div className="flex items-center text-sm text-muted-foreground">
             <Building className="mr-1 h-4 w-4" />
-            <span>{task.building.name}</span>
+            <span>{task.buildingName}</span>
           </div>
           <div className="flex items-center text-sm text-muted-foreground">
             <Clock className="mr-1 h-4 w-4" />
@@ -75,7 +79,7 @@ export function TaskCard({ task, onTaskUpdated }: TaskCardProps) {
       <CardFooter className="pt-0">
         <div className="w-full">
           <Select
-            value={task.status}
+            value={currentStatus}
             onValueChange={handleStatusChange}
             disabled={isUpdating}
           >
