@@ -70,12 +70,10 @@ The application integrates with a RESTful API for task management:
 - `GET /tasks?userId={id}` - Filter tasks by user
 - `POST /tasks` - Create new task
 - `PATCH /tasks/{id}/status` - Update task status
-- `GET /tasks/reminders` - Get tasks needing reminders
 
 ### WebSocket Events
 - `task:upcoming` - Notifications for tasks due soon
 - `task:overdue` - Alerts for overdue tasks
-- `task:updated` - Real-time status updates
 
 ## 🚀 Getting Started
 
