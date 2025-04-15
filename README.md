@@ -1,100 +1,111 @@
+# Unified Task Manager Pro
 
-# Task Management Module
+A modern, feature-rich task management system designed for property management teams. This application helps teams efficiently manage tasks across multiple buildings and properties, with real-time updates and smart notifications.
 
-This is a simplified task management module for property management, allowing users to create tasks, assign them to users, and track their status across different buildings.
+## 🚀 Features
 
-## Features
+### Task Management
+- **Create & Manage Tasks**
+  - Create tasks with detailed information (title, assigned user, status, due date, building)
+  - Update task status in real-time (To Do, In Progress, Complete)
+  - Filter tasks by building, user, or status
+  - Responsive grid layout with task cards
 
-- **Task Management**:
-  - Create tasks with title, assigned user, status, due date, and building/property
-  - Update task status (To Do, In Progress, Complete)
-  - Filter tasks by building ID or assigned user
-  - View all tasks in a responsive grid layout
+### Smart Notifications
+- **Real-time Updates**
+  - Instant notifications for task status changes
+  - Upcoming task reminders (24 hours before due date)
+  - Overdue task alerts
+  - Desktop notifications with detailed task information
 
-- **Auto-Reminder Logic**:
-  - Tasks that are overdue or due within 24 hours are highlighted
-  - Dedicated reminders section in the sidebar
+### User Experience
+- **Modern UI/UX**
+  - Clean, intuitive interface built with Shadcn UI
+  - Responsive design for all devices
+  - Color-coded status indicators
+  - Form validation and error handling
+  - Loading states and feedback
 
-- **UI Features**:
-  - Responsive design that works on mobile, tablet, and desktop
-  - Status indicators with color coding
-  - Form validation for task creation
-  - Loading states and error handling
+## 🛠️ Tech Stack
 
-## Tech Stack
+### Frontend
+- **React 18** with TypeScript for type safety
+- **React Hook Form** for efficient form handling
+- **Tailwind CSS** for utility-first styling
+- **Shadcn UI** for beautiful, accessible components
+- **Date-fns** for reliable date manipulation
+- **Socket.io** for real-time updates
 
-- **Frontend**:
-  - React with TypeScript
-  - React Hook Form for form handling
-  - Tailwind CSS for styling
-  - Shadcn UI for component library
-  - Date-fns for date manipulation
+### Data Management
+- **RESTful API** integration
+- **WebSocket** for real-time communication
+- **TypeScript** interfaces for type safety
+- **Error handling** and loading states
 
-- **Data Management**:
-  - Mock API service with simulated network delays
-  - In-memory data store (would connect to PostgreSQL/MySQL in production)
+## 📁 Project Structure
 
-## Project Structure
+```
+src/
+├── components/     # Reusable UI components
+│   ├── TaskCard.tsx
+│   ├── CreateTaskForm.tsx
+│   └── ...
+├── services/      # API and data services
+│   ├── taskService.ts
+│   └── ...
+├── types/         # TypeScript type definitions
+│   └── task.ts
+├── pages/         # Application pages
+│   └── Index.tsx
+└── lib/          # Utility functions and configurations
+```
 
-- `/src/components`: UI components for the application
-- `/src/services`: API and data services
-- `/src/types`: TypeScript type definitions
-- `/src/pages`: Main application pages
+## 🔌 API Integration
 
-## API Endpoints (Mock Implementation)
+The application integrates with a RESTful API for task management:
 
-The application includes mock implementations of the following API endpoints:
+### Task Endpoints
+- `GET /tasks` - List all tasks
+- `GET /tasks?buildingId={id}` - Filter tasks by building
+- `GET /tasks?userId={id}` - Filter tasks by user
+- `POST /tasks` - Create new task
+- `PATCH /tasks/{id}/status` - Update task status
+- `GET /tasks/reminders` - Get tasks needing reminders
 
-- `GET /tasks`: List all tasks
-- `GET /tasks?buildingId={id}`: List tasks by building ID
-- `GET /tasks?userId={id}`: List tasks by assigned user
-- `POST /tasks`: Create a new task
-- `PATCH /tasks/{id}/status`: Update a task status
-- `GET /tasks/reminders`: Get tasks needing reminders
+### WebSocket Events
+- `task:upcoming` - Notifications for tasks due soon
+- `task:overdue` - Alerts for overdue tasks
+- `task:updated` - Real-time status updates
 
-## How Email Integration Could Work
+## 🚀 Getting Started
 
-The task system could be linked to an incoming email parser or API integration as follows:
-
-1. **Email Parser Integration**:
-   - Set up a dedicated email address (e.g., tasks@property.com)
-   - Incoming emails would be parsed by a service like Mailgun or SendGrid
-   - The parser would extract key information (subject = task title, body = details)
-   - Structured data would be sent to the API to create new tasks
-   - Reply-to threads could update existing tasks
-
-2. **API Integration**:
-   - Expose a secure API endpoint for external services
-   - Third-party property management tools could create tasks via API
-   - Maintenance request systems could automatically generate tasks
-   - Smart building systems could trigger tasks based on sensor data
-
-3. **Implementation**:
-   - Add a webhook endpoint to receive parsed email data
-   - Implement authentication for API consumers
-   - Create a task mapping service to standardize incoming data
-   - Add notification system to alert users of new email-generated tasks
-
-## Future Enhancements
-
-- User authentication and role-based permissions
-- File attachments for tasks (photos of issues, documents)
-- Task comments and activity history
-- Task categories and priority levels
-- Task dependencies and subtasks
-- Calendar view for due dates
-- Mobile app with push notifications
-
-## Running the Project
-
-1. Install dependencies:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/omgokb-techie/unified-task-manager-pro.git
+   cd unified-task-manager-pro
    ```
+
+2. **Install dependencies**
+   ```bash
    npm install
    ```
 
-2. Start the development server:
-   ```
+3. **Start the development server**
+   ```bash
    npm run dev
    ```
 
-3. Open your browser to the local server address shown in the terminal (typically http://localhost:8080)
+4. **Open your browser**
+   Navigate to `http://localhost:8080`
+
+## 🔮 Future Enhancements
+
+- [ ] User authentication and role-based access
+- [ ] File attachments for tasks
+- [ ] Task comments and activity history
+- [ ] Task categories and priority levels
+- [ ] Task dependencies and subtasks
+- [ ] Calendar view for due dates
+- [ ] Mobile app with push notifications
+- [ ] Email integration for task creation
+- [ ] API integration for third-party tools
